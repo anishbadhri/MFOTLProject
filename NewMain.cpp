@@ -43,7 +43,7 @@ int main(int argc,char* argv[])
 		cout<< "\nFormula tree construction fails.\n";
 		return 0;
 	}
-	cout<<"\nFormula Tree Constructed\n";
+	cout<<"Formula Tree Constructed\n";
 	temp = getchar();
 	done = InpFormula.quant_elim();
 	if(!done)
@@ -54,11 +54,10 @@ int main(int argc,char* argv[])
 	cout<<"Quantifier Eliminated\n";
 	temp = getchar();
 	string expression = InpFormula.get_expression();
+	cout<<"Expression: "<<expression<<endl;
 	convert con(InpFormula.get_NoOfCltTypes());
 	vector<int> vec = InpFormula.get_counters();
 	con.setCounters(vec);
 	con.produceLTLFile(ltl_file,expression);
-	cout<<endl<<endl;
-
-	con.print();
+	cout<<"LTL File Produced\n";
 }

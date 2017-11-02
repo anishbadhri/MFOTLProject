@@ -35,35 +35,35 @@ bool Formula::ftree_convert()
 	FTree* op_node;
 	FTree* new_op_node;
 
-	cout << "We are in the formula to tree conversion routine.\n";
+	//cout << "We are in the formula to tree conversion routine.\n";
 
 //initialize the client type no. to zero
 //this will be computed and updated here using the two add_to_formula_info methods. 
 
 	NoOfCltTypes=0;
 
-	cout <<"\nThe input formula is:->" << FormulaText << endl;
+	//cout <<"\nThe input formula is:->" << FormulaText << endl;
 
 	len=FormulaText.length();
-	cout<<"\nLength of the formula is:-> " << len << endl;
+	//cout<<"\nLength of the formula is:-> " << len << endl;
 	i=0;
 	while(i<len)
 	{
-		cout<<"\nLooking at the " << i << "th symbol of the formula:" << FormulaText[i]<< endl;
+		//cout<<"\nLooking at the " << i << "th symbol of the formula:" << FormulaText[i]<< endl;
 		//looking at FormulaText[i]
 		switch(isoperator(FormulaText[i])){//we expect operators to be single letter symbols, including ( and ).
 		 case 1:
-			cout<<FormulaText[i]<< "is an operator\n";
+			//cout<<FormulaText[i]<< "is an operator\n";
 //Presently the op_prcd method does nothing but differentiate (, ) and other operators. This is so as input is fully parenthesized.
 //We will need operator precedence once we remove this constraint on the input.
 			switch(op_prcd(FormulaText[i])){
 				case 0://**(** do nothing
-					cout<<"\nWe are looking at the symbol:" << FormulaText[i];
-					cout<<"\nIgnore, move to the next symbol\n";
+					//cout<<"\nWe are looking at the symbol:" << FormulaText[i];
+					//cout<<"\nIgnore, move to the next symbol\n";
 					++i;
 					continue;
 				case 1://**)**
-					cout<<"\nWe are looking at the symbol:" << FormulaText[i];
+					//cout<<"\nWe are looking at the symbol:" << FormulaText[i];
 					//getchar();
 //-----------------------------------------------------------------------------------------------------------------------------
 //")" can be encountered in three different places 1. p(x) or p(x:i) 2. (x=y) or (x:i=y:j) 3. (\alpha op \beta) where op can 
@@ -71,29 +71,29 @@ bool Formula::ftree_convert()
 //-----------------------------------------------------------------------------------------------------------------------------
 					if(FormulaText[i-1]==')'){//look at the operator on the top of the operation stack 
 //and accordingly construct a tree by taking one or more operands from the operand stack
-						cout<<"\npop an operator from the op stack\ncheck whether it is unary or binary\n";
+						//cout<<"\npop an operator from the op stack\ncheck whether it is unary or binary\n";
 						fflush(stdout);
 						if(!op_stack.empty()){
 							op_node=op_stack.top();
 							op_stack.pop();
 						}
 						else{
-							cout << "\nThere is some problem.\n";
-							cout << "\nWe are trying to access an empty op_stack\n";
+							//cout << "\nThere is some problem.\n";
+							//cout << "\nWe are trying to access an empty op_stack\n";
 							return 0;
 						}
-						cout<<"\nThe operator is:->" << op_node->val;
+						//cout<<"\nThe operator is:->" << op_node->val;
 						fflush(stdout);
 						switch(op_type(op_node->val[0])){
 							case 1://unary operator
-								cout<<"\nif unary, pop a subformula from the formula stack\n";
+								//cout<<"\nif unary, pop a subformula from the formula stack\n";
 								if(!for_stack.empty()){
 									for_node_n=for_stack.top();
 									for_stack.pop();
 								}
 								else{
-									cout << "\nThere is some problem.\n";
-									cout << "\nWe are trying to access an empty for_stack\n";
+									//cout << "\nThere is some problem.\n";
+									//cout << "\nWe are trying to access an empty for_stack\n";
 									return 0;
 								}
 								display_ft(for_node_n);
@@ -106,9 +106,9 @@ bool Formula::ftree_convert()
 								op_node->num=-1;
 								op_node->client=for_node_n->client;
 
-								cout<<"\nConstructed a larger subformula\n";
+								//cout<<"\nConstructed a larger subformula\n";
 								display_ft(op_node);
-								cout<<"\npush the new subformula node onto the formula stack...\n";
+								//cout<<"\npush the new subformula node onto the formula stack...\n";
 
 								for_stack.push(op_node);
 								//display_for_stack();
@@ -118,23 +118,23 @@ bool Formula::ftree_convert()
 
 
 							case 2://binary operator
-								cout<<"\nif binary, pop two subformulas from the formula stack\n";
+								//cout<<"\nif binary, pop two subformulas from the formula stack\n";
 								if(for_stack.empty()){
-									cout << "\nThere is some problem.\n";
-									cout << "\nWe are trying to access an empty stack.\n";
+									//cout << "\nThere is some problem.\n";
+									//cout << "\nWe are trying to access an empty stack.\n";
 									return 0;
 								}
 								for_node_r=for_stack.top();for_stack.pop();
 								display_ft(for_node_r);
-								cout << "\n";
+								//cout << "\n";
 								if(for_stack.empty()){
-									cout << "\nThere is some problem.\n";
-									cout << "\nWe are trying to access an empty stack.\n";
+									//cout << "\nThere is some problem.\n";
+									//cout << "\nWe are trying to access an empty stack.\n";
 									return 0;
 								}
 								for_node_l=for_stack.top();for_stack.pop();
 								display_ft(for_node_l);
-								cout << "\n";
+								//cout << "\n";
 
 								op_node->left=for_node_l;
 								op_node->right=for_node_r;
@@ -146,26 +146,26 @@ bool Formula::ftree_convert()
 
 								op_node->client=for_node_l->client;
 
-								cout<<"\nConstructed a larger subformula\n";
+								//cout<<"\nConstructed a larger subformula\n";
 								display_ft(op_node);
-								cout << "\n";
+								//cout << "\n";
 
-								cout<<"\npush the new subformula node onto the formula stack...\n";
+								//cout<<"\npush the new subformula node onto the formula stack...\n";
 								for_stack.push(op_node);
 								//display_for_stack();
 
 								i++;
 								continue;
 							case 3://quantifiers
-								cout<<"\nif quantifier, pop a subformula from the formula stack\n";
+								//cout<<"\nif quantifier, pop a subformula from the formula stack\n";
 								if(for_stack.empty()){
-									cout << "\nThere is some problem.\n";
-									cout << "\nWe are trying to access an empty stack.\n";
+									//cout << "\nThere is some problem.\n";
+									//cout << "\nWe are trying to access an empty stack.\n";
 									return 0;
 								}
 								for_node_n=for_stack.top();for_stack.pop();
 								display_ft(for_node_n);
-								cout << "\n";
+								//cout << "\n";
 
 //make sure that formula is correctly popped from the formula stack.
 								op_node->next=for_node_n;
@@ -177,12 +177,12 @@ bool Formula::ftree_convert()
 
 								op_node->client=for_node_n->client;
 
-								cout<<"\nConstructed a larger subformula\n";
+								//cout<<"\nConstructed a larger subformula\n";
 								display_ft(op_node);
-								cout << "\n";
+								//cout << "\n";
 
 
-								cout<<"\npush the new subformula node onto the formula stack...\n";
+								//cout<<"\npush the new subformula node onto the formula stack...\n";
 								for_stack.push(op_node);
 								//display_for_stack();
 
@@ -191,15 +191,15 @@ bool Formula::ftree_convert()
 //the following case of predicate should not occur.
 //we have aleady constructed a tree for pred(var:client) and pushed onto formula stack
 							case 4://predicates
-								cout<<"\nif predicate, pop a subformula from the formula stack\n";
+								//cout<<"\nif predicate, pop a subformula from the formula stack\n";
 								if(for_stack.empty()){
-									cout << "\nThere is some problem.\n";
-									cout << "\nWe are trying to access an empty stack.\n";
+									//cout << "\nThere is some problem.\n";
+									//cout << "\nWe are trying to access an empty stack.\n";
 									return 0;
 								}
 								for_node_n=for_stack.top();for_stack.pop();
 								display_ft(for_node_n);
-								cout << "\n";
+								//cout << "\n";
 
 //make sure that formula is correctly popped from the formula stack.
 								op_node->next=for_node_n;
@@ -210,11 +210,11 @@ bool Formula::ftree_convert()
 								op_node->num=-1;
 								op_node->client=for_node_n->client;
 
-								cout<<"\nConstructed a larger subformula\n";
+								//cout<<"\nConstructed a larger subformula\n";
 								display_ft(op_node);
-								cout << "\n";
+								//cout << "\n";
 
-								cout<<"\npush the new subformula node onto the formula stack...\n";
+								//cout<<"\npush the new subformula node onto the formula stack...\n";
 								for_stack.push(op_node);
 								//display_for_stack();
 
@@ -226,20 +226,20 @@ bool Formula::ftree_convert()
 					}//end of if(FormulaText[i-1]==')')
 					else{//do nothing
 					//this is the case when we encounter closing paranethesis of (x=y)
-						cout<<"\nIgnored the " << i << "th symbol " << FormulaText[i] << endl;
+						//cout<<"\nIgnored the " << i << "th symbol " << FormulaText[i] << endl;
 						i++;
 						continue;
 					}
 
 				case 2:	//if FormulaText[i] is not left or right bracket but an operator (~,&,|,E,A) then construct an internal node and store in the stack, it is an operator proper ~,&,|, et. al.
-					cout<<"\nLooking at a real operator:" << FormulaText[i]<< endl;
+					//cout<<"\nLooking at a real operator:" << FormulaText[i]<< endl;
 					fflush(stdout);
 					new_op_node= new FTree;
 					if(new_op_node==NULL){
-						//cout<<"\nMemory Allocation Error\n";
+						////cout<<"\nMemory Allocation Error\n";
 						exit(1);
 					}
-					//cout<<"\nConstructed a tree node to store %c with pointer %p",FormulaText[i],new_op_node);
+					////cout<<"\nConstructed a tree node to store %c with pointer %p",FormulaText[i],new_op_node);
 					fflush(stdout);
 
 					new_op_node->val=FormulaText[i];
@@ -256,23 +256,23 @@ bool Formula::ftree_convert()
 					new_op_node->client.clear();
 
 					switch(op_type(new_op_node->val[0])){
-						case 1: cout<< "\nUnary Operator\n";
+						case 1: //cout<< "\nUnary Operator\n";
 							new_op_node->type=1;//unary operator
 							//new_op_node->val[1]='\0';---no longer needed
 							i++;
 							op_stack.push(new_op_node);
 							break;
 							
-						case 2: cout<< "\nBinary Operator\n";
+						case 2: //cout<< "\nBinary Operator\n";
 							new_op_node->type=2;//binary operator
 							//new_op_node->val[1]='\0';--no longer needed
 							i++;
 							op_stack.push(new_op_node);
 							break;
 
-						case 3: cout<< "\nQuantifier\n";
+						case 3: //cout<< "\nQuantifier\n";
 							new_op_node->type=3;//quantifier
-							cout << "\nType field updated.\n";fflush(stdout);
+							//cout << "\nType field updated.\n";fflush(stdout);
 //FormulaText[i] is either E or A. We expect it to be followed by variable or variable:client-type
 							j=1;
 							flag=0;
@@ -287,7 +287,7 @@ bool Formula::ftree_convert()
 								j++;
 							}
 							//new_op_node->val[j]='\0';--no longer needed
-							cout << "Value field updated.\n";fflush(stdout);
+							//cout << "Value field updated.\n";fflush(stdout);
 							if(!flag){//flag is false						
 								new_op_node->client.clear();//no client info
 								
@@ -301,12 +301,12 @@ bool Formula::ftree_convert()
 								//}
 								new_op_node->client=new_op_node->val.substr(in+1,new_op_node->val.length()-in-1);
 							}
-							cout<< "\nClient field updated.\n";fflush(stdout);
+							//cout<< "\nClient field updated.\n";fflush(stdout);
 							i=i+j;
 							op_stack.push(new_op_node);
 							break;
 
-						case 4: cout<< "\nMonadic Predicate\n";
+						case 4: //cout<< "\nMonadic Predicate\n";
 							new_op_node->type=4;//monadic predicate p(var:client)
 							j=1;
 							while(FormulaText[i+j]!='('){
@@ -347,10 +347,10 @@ bool Formula::ftree_convert()
 //we should also add a variable to formula_info	
 							FTree* new_for_node= new FTree;
 							if(new_for_node==NULL){
-								//cout<<"\nMemory Allocation Error\n";
+								////cout<<"\nMemory Allocation Error\n";
 								exit(1);
 							}
-							//cout<<"\nConstructed a tree node to store %c with pointer %p",FormulaText[i],new_op_node);
+							////cout<<"\nConstructed a tree node to store %c with pointer %p",FormulaText[i],new_op_node);
 							fflush(stdout);
 
 		//					new_op_node->global=0;
@@ -367,10 +367,10 @@ bool Formula::ftree_convert()
 							break;
 
 					}//end of switch(op_type(new_op_node->val[0]))
-					//cout<<"\nLabel for internal node is %s",new_op_node->val);
+					////cout<<"\nLabel for internal node is %s",new_op_node->val);
 					fflush(stdout);			
 					
-					//cout<<"\npush the new op node onto the stack...............\n";
+					////cout<<"\npush the new op node onto the stack...............\n";
 					//display_op_stack();
 					continue;
 
@@ -379,7 +379,7 @@ bool Formula::ftree_convert()
 		 	continue;
 //-------------------end of case 1 for isoperator----------------------------------------------------
 		 case 0: //FormulaText[i] is not an operator
-			//cout<<"\n%c is not an operator",FormulaText[i]);
+			////cout<<"\n%c is not an operator",FormulaText[i]);
 			fflush(stdout);
 //in this case, we shall encounter a variable only as a part of = (equality) subformula.
 //the other two possibilities, variable along with E or A and variable along with predicate we have already taken care of.
@@ -387,30 +387,30 @@ bool Formula::ftree_convert()
 			//construct token
 			if(FormulaText[i-1]=='('||FormulaText[i-1]=='='){
 				var1.clear();//initialize the token if the preceding character is '('
-				//cout<<"\nInitialized the token.\nWe have to read the full variable.\n";
+				////cout<<"\nInitialized the token.\nWe have to read the full variable.\n";
 				fflush(stdout);
 			}
 			else{
-				//cout<<"\nThere is some problem with the structure of the input. Exiting.......;
+				////cout<<"\nThere is some problem with the structure of the input. Exiting.......;
 				fflush(stdout);
 				exit(1);
 			}
-			//cout<<"\nwe are here.1\n";
+			////cout<<"\nwe are here.1\n";
 			//fflush(stdout);
 			flag=0;
 			j=i;
 			while(FormulaText[j]!='='&& FormulaText[j]!='!' && FormulaText[j]!=':' && FormulaText[j]!=')' ){
 				var1.push_back(FormulaText[j]);
 				j++;
-				//cout<<"\nAdding %c to the token\n",FormulaText[j-1]);
+				////cout<<"\nAdding %c to the token\n",FormulaText[j-1]);
 				//getchar();
-				//cout<<"\nwe are here.\n";
+				////cout<<"\nwe are here.\n";
 				fflush(stdout);
 
 			}
 			//var1[j-i]='\0';--no longer needed
 
-			//cout<<"\nwe are here.2\n";
+			////cout<<"\nwe are here.2\n";
 			//fflush(stdout);
 
 //token carries a variable now. we have to make sure two things at this point, 
@@ -424,9 +424,9 @@ bool Formula::ftree_convert()
 				while(FormulaText[j]!='='&& FormulaText[j]!='!' && FormulaText[j]!=')'){
 					client1.push_back(FormulaText[j]);
 					j++;
-					//cout<<"\nAdding %c to the token\n",FormulaText[j-1]);
+					////cout<<"\nAdding %c to the token\n",FormulaText[j-1]);
 					//getchar();
-					//cout<<"\nwe are here.\n";
+					////cout<<"\nwe are here.\n";
 					fflush(stdout);
 
 				}
@@ -449,22 +449,22 @@ bool Formula::ftree_convert()
 
 			for_node_l=new FTree;
 			if(for_node_l==NULL){
-				//cout<<"\nMemory Allocation Error\n";
+				////cout<<"\nMemory Allocation Error\n";
 				exit(1);
 			}
 			for_node_l->type=0;
 			for_node_l->val=var1;
 			for_node_l->client=client1;
-			//cout<<"\nwe are here.\n";
+			////cout<<"\nwe are here.\n";
 			fflush(stdout);
 			add_variable_to_formula_info(for_node_l->val,for_node_l->client);
-			//cout<<"\nwe are here.\n";
+			////cout<<"\nwe are here.\n";
 			fflush(stdout);
 //			if(done){
-				//cout<<"\nSuccessfully added a variable to the VList.\n"; 
+				////cout<<"\nSuccessfully added a variable to the VList.\n"; 
 //				formula_info->VNum++;
 //			}
-			//cout<<"\nThe label for leaf node is %s with pointer %p\n",for_node->val,for_node);
+			////cout<<"\nThe label for leaf node is %s with pointer %p\n",for_node->val,for_node);
 			fflush(stdout);
 			for_node_l->parent=NULL;
 			for_node_l->right=NULL;
@@ -477,36 +477,36 @@ bool Formula::ftree_convert()
 			for_node_l->num=-1;
 
 //			for_stack.push(for_node);
-			//cout<<"\npush the new leaf node onto the stack...............\n";
+			////cout<<"\npush the new leaf node onto the stack...............\n";
 			fflush(stdout);
 
 //now we compute the second part of the equality (inequality)
 			if(FormulaText[i-1]=='='){
 				var2.clear();//initialize the token if the preceding character is '('
-				//cout<<"\nInitialized the token.\nWe have to read the full variable.\n";
+				////cout<<"\nInitialized the token.\nWe have to read the full variable.\n";
 				fflush(stdout);
 			}
 			else{
-				//cout<<"\nThere is some problem with the structure of the input. Exiting.......;
+				////cout<<"\nThere is some problem with the structure of the input. Exiting.......;
 				fflush(stdout);
 				exit(1);
 			}
-			//cout<<"\nwe are here.1\n";
+			////cout<<"\nwe are here.1\n";
 			//fflush(stdout);
 			
 			j=i;
 			while(FormulaText[j]!=':' && FormulaText[j]!=')' ){
 				var2.push_back(FormulaText[j]);
 				j++;
-				//cout<<"\nAdding %c to the token\n",FormulaText[j-1]);
+				////cout<<"\nAdding %c to the token\n",FormulaText[j-1]);
 				//getchar();
-				//cout<<"\nwe are here.\n";
+				////cout<<"\nwe are here.\n";
 				fflush(stdout);
 
 			}
 			//var2[j-i]='\0';-- no longer needed
 
-			//cout<<"\nwe are here.2\n";
+			////cout<<"\nwe are here.2\n";
 			//fflush(stdout);
 
 //token carries a variable now. we have to make sure two things at this point, 
@@ -520,9 +520,9 @@ bool Formula::ftree_convert()
 				while(FormulaText[j]!=')'){
 					client2.push_back(FormulaText[j]);
 					j++;
-					//cout<<"\nAdding %c to the token\n",FormulaText[j-1]);
+					////cout<<"\nAdding %c to the token\n",FormulaText[j-1]);
 					//getchar();
-					//cout<<"\nwe are here.\n";
+					////cout<<"\nwe are here.\n";
 					fflush(stdout);
 
 				}
@@ -531,22 +531,22 @@ bool Formula::ftree_convert()
 						
 			for_node_r=new FTree;
 			if(for_node_r==NULL){
-				//cout<<"\nMemory Allocation Error\n";
+				////cout<<"\nMemory Allocation Error\n";
 				exit(1);
 			}
 			for_node_r->type=0;
 			for_node_r->val=var2;
 			for_node_r->client=client2;
-			//cout<<"\nwe are here.\n";
+			////cout<<"\nwe are here.\n";
 			fflush(stdout);
 			add_variable_to_formula_info(for_node_r->val,for_node_r->client);
-			//cout<<"\nwe are here.\n";
+			////cout<<"\nwe are here.\n";
 			fflush(stdout);
 //			if(done){
-				//cout<<"\nSuccessfully added a variable to the VList.\n"; 
+				////cout<<"\nSuccessfully added a variable to the VList.\n"; 
 //				formula_info->VNum++;
 //			}
-			//cout<<"\nThe label for leaf node is %s with pointer %p\n",for_node->val,for_node);
+			////cout<<"\nThe label for leaf node is %s with pointer %p\n",for_node->val,for_node);
 			fflush(stdout);
 			for_node_r->parent=NULL;
 			for_node_r->right=NULL;
@@ -559,7 +559,7 @@ bool Formula::ftree_convert()
 			for_node_r->num=-1;
 
 //			for_stack.push(for_node);
-			//cout<<"\npush the new leaf node onto the stack...............\n";
+			////cout<<"\npush the new leaf node onto the stack...............\n";
 			fflush(stdout);	
 
 //--------------------------------------------------------------------------------------------------------			
@@ -567,14 +567,14 @@ bool Formula::ftree_convert()
 			fflush(stdout);
 			op_node=new FTree;
 			if(op_node==NULL){
-				//cout<<"\nMemory Allocation Error\n";
+				////cout<<"\nMemory Allocation Error\n";
 				exit(1);
 			}
 			if(flag==0)
 				op_node->val="!=";
 			else
 				op_node->val="=";
-			//cout<<"\nThe operator is %s\n",op_node->val);
+			////cout<<"\nThe operator is %s\n",op_node->val);
 			fflush(stdout);
 			op_node->left=for_node_l;
 			op_node->right=for_node_r;
@@ -585,7 +585,7 @@ bool Formula::ftree_convert()
 			op_node->num=-1;
 			op_node->client.clear();
 
-			//cout<<"\npush the new subformula node onto the formula stack ...............\n";
+			////cout<<"\npush the new subformula node onto the formula stack ...............\n";
 			for_stack.push(op_node);
 
 
@@ -594,7 +594,7 @@ bool Formula::ftree_convert()
 
 //-------------------end of case 0 for isoperator----------------------------------------------------
 		 case -1:
-			//cout<<"\nThere is an error in the input. Exiting...........;
+			////cout<<"\nThere is an error in the input. Exiting...........;
 			exit(1);
 //-------------------end of case -1 for isoperator----------------------------------------------------
 		}//end of switch-case(isoperator(FormulaText[i]))
@@ -602,7 +602,7 @@ bool Formula::ftree_convert()
 //	for_node=for_stack.top();for_stack.pop();
 	FormulaTree=for_stack.top();for_stack.pop();
 //print the number of client types.
-	cout << "\nThe no. of client types mentioned in the formula is: " << NoOfCltTypes << endl;
+	//cout << "\nThe no. of client types mentioned in the formula is: " << NoOfCltTypes << endl;
 	if(FormulaTree!=NULL)
 		return 1;
 	else
@@ -624,16 +624,16 @@ void Formula::add_predicate_to_formula_info(string pred,string client)
 	{
 		PredList.insert(PE);
 		if(PredNum.find(client)==PredNum.end()){//No entry for client in the map PredNum
-			cout << "\nInitializing the entry for " << client << " in map PredNum.\n";
-			cout << "\nRegistering a new client type.\n";
+			//cout << "\nInitializing the entry for " << client << " in map PredNum.\n";
+			//cout << "\nRegistering a new client type.\n";
 			//getchar();
-			//cout << "\nLength of client is: " << strlen(client)<< endl;
+			////cout << "\nLength of client is: " << strlen(client)<< endl;
 			PredNum[client]=1;
 		}
 		else{
-			cout << "\nIncrementing the entry for " << client << " in map PredNum.\n";
+			//cout << "\nIncrementing the entry for " << client << " in map PredNum.\n";
 			//getchar();
-			//cout << "\nLength of client is: " << strlen(client)<< endl;
+			////cout << "\nLength of client is: " << strlen(client)<< endl;
 			PredNum[client]=PredNum[client]+1;
 		}
 	}
@@ -653,21 +653,21 @@ void Formula::add_variable_to_formula_info(string VE,string client)
 	if(VarList.find(VE)==VarList.end())//VE is not in the set VarList
 	{
 		VarList.insert(VE);
-		cout << "\nInserting variable " << VE << " in the list.\n";
+		//cout << "\nInserting variable " << VE << " in the list.\n";
 		//getchar();
 		if(VarNum.find(client)==VarNum.end()){//No entry for client in the map VarNum
-			cout << "\nInitializing the entry for " << client << " in map VarNum.\n";
+			//cout << "\nInitializing the entry for " << client << " in map VarNum.\n";
 			//getchar();
-			//cout << "\nLength of client is: " << strlen(client)<< endl;
+			////cout << "\nLength of client is: " << strlen(client)<< endl;
 			VarNum[client]=1;
 //register a new client type
 			NoOfCltTypes++;
 
 		}
 		else{
-			cout << "\nIncrementing the entry for " << client << " in map VarNum.\n";
+			//cout << "\nIncrementing the entry for " << client << " in map VarNum.\n";
 			//getchar();
-			//cout << "\nLength of client is: " << strlen(client)<< endl;
+			////cout << "\nLength of client is: " << strlen(client)<< endl;
 			VarNum[client]=VarNum[client]+1;
 		}
 	}
@@ -712,14 +712,14 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 
 //	//getchar();
 
-	cout << "\n\n\nWe are in quantifier elimination routine....";
-	cout << "Looking at the following subformula:";
+	//cout << "\n\n\nWe are in quantifier elimination routine....";
+	//cout << "Looking at the following subformula:";
 	display_ft_pre(TF);
-	cout<<"\n";
-
-	//cout<<"\nIn infix form:;
-	//display_ft(TF);
 	//cout<<"\n";
+
+	////cout<<"\nIn infix form:;
+	//display_ft(TF);
+	////cout<<"\n";
 	
 	//display_lists();
 	//display_nums();
@@ -727,14 +727,14 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 	client=TF->client;
 	int PredVal=PredNum[client];
 	int VarVal=PredNum[client];
-	//cout << "The client name is: "<< client<< endl;
-//	cout<<"\nThe no. of predicates for client "<< client<< " is: " << PredVal << endl;
-//	cout<<"\nThe no. of variables is: " << VarVal << endl;
+	////cout << "The client name is: "<< client<< endl;
+//	//cout<<"\nThe no. of predicates for client "<< client<< " is: " << PredVal << endl;
+//	//cout<<"\nThe no. of variables is: " << VarVal << endl;
 //compute M and R for the client type of E
 	M=1 << PredVal;
 	R=VarVal;
-	cout<<"\n\nThe no. of models for client "<< client<< " is: " << M << endl;
-	cout<<"\n\nThe no. of copies of models is: " << R << endl;
+	//cout<<"\n\nThe no. of models for client "<< client<< " is: " << M << endl;
+	//cout<<"\n\nThe no. of copies of models is: " << R << endl;
 
 	//getchar();
 
@@ -766,27 +766,27 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 							//	k++;
 							//}
 							//var[k-1]='\0';--no longer needed
-							cout << "\neliminating E over the variable " << var << endl;
-							cout << "\nAfter eliminating quantifiers from the sub-formula:";
+							//cout << "\neliminating E over the variable " << var << endl;
+							//cout << "\nAfter eliminating quantifiers from the sub-formula:";
 							display_ft_pre_sub(TF->next);
 							
 							SubdTFnext=eliminate_quantifier(TF->next);
-							cout<<"\n\nWe get the following formula:";
+							//cout<<"\n\nWe get the following formula:";
 							display_ft_pre_sub(SubdTFnext);
-							cout<<"\n\n";
-							getchar();
+							//cout<<"\n\n";
+							//getchar();
 
-							cout<<"\nEliminating an existential quantifier E" << var<< endl;
+							//cout<<"\nEliminating an existential quantifier E" << var<< endl;
 
 
 							//client=TF->client;
-							//cout<<"\nThe no. of predicates for client "<< client<< " is: " << PredNum[client] << endl;
-							//cout<<"\nThe no. of variables is: " << VarNum[client] << endl;
+							////cout<<"\nThe no. of predicates for client "<< client<< " is: " << PredNum[client] << endl;
+							////cout<<"\nThe no. of variables is: " << VarNum[client] << endl;
 //compute M and R for the client type of E
 							//M=1 << PredNum[client];
 							//R=VarNum[client];
-							cout<<"\nThe no. of models for client "<< client<< " is: " << M << endl;
-							cout<<"\nThe no. of copies of models is: " << R << endl;
+							//cout<<"\nThe no. of models for client "<< client<< " is: " << M << endl;
+							//cout<<"\nThe no. of copies of models is: " << R << endl;
 //	//getchar();
 
 							//getchar();
@@ -798,52 +798,52 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 										root->val="|";
 										root->type=2;
 										root->client=client;
-										cout << "\nConstructing a copy of the subformula.......\n";
+										//cout << "\nConstructing a copy of the subformula.......\n";
 										new_subformula=copy(SubdTFnext);
 
-										cout<<"\nCopy of the subformula with free variable " << var;
+										//cout<<"\nCopy of the subformula with free variable " << var;
 										display_ft_pre_sub(new_subformula);
-										cout<<"\n";
+										//cout<<"\n";
 
-										cout<<"\n\nReplacing "<< var << " by " << R*i+j << " in the above formula\n\n";
-										getchar();
+										//cout<<"\n\nReplacing "<< var << " by " << R*i+j << " in the above formula\n\n";
+										//getchar();
 
 										substitute(new_subformula,var,0,0,R*0+0);
 
-										cout<<"\nThe substituted subformula is:";
+										//cout<<"\nThe substituted subformula is:";
 										display_ft_pre_sub(new_subformula);
-										cout<<"\n\n";
+										//cout<<"\n\n";
 
 										root->left=new_subformula;
 										root->right=NULL;
 
-										cout<<"\nThe partially quantifier eliminated formula is:";
+										//cout<<"\nThe partially quantifier eliminated formula is:";
 										display_ft_pre_sub(root);
-										cout<<"\n\n";
+										//cout<<"\n\n";
 
 										old_root=root;
 									}
 									else if(i==M-1 && j==R-1){
 										new_subformula=copy(SubdTFnext);
 
-										cout<<"\nCopy of the subformula with free variable " << var;
+										//cout<<"\nCopy of the subformula with free variable " << var;
 										display_ft_pre_sub(new_subformula);
-										cout<<"\n";
+										//cout<<"\n";
 
-										cout<<"\n\nReplacing "<< var << " by " << R*i+j << " in the above formula\n\n";
-										getchar();
+										//cout<<"\n\nReplacing "<< var << " by " << R*i+j << " in the above formula\n\n";
+										//getchar();
 
 										substitute(new_subformula,var,i,j,R*i+j);
 
-										cout<<"\nThe substituted subformula is:";
+										//cout<<"\nThe substituted subformula is:";
 										display_ft_pre_sub(new_subformula);
-										cout<<"\n\n";
+										//cout<<"\n\n";
 
 										old_root->right=new_subformula;
 
-										cout<<"\nThe partially quantifier eliminated formula is:";
+										//cout<<"\nThe partially quantifier eliminated formula is:";
 										display_ft_pre_sub(old_root);
-										cout<<"\n\n";
+										//cout<<"\n\n";
 
 									}
 									else{
@@ -854,25 +854,25 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 
 										new_subformula=copy(SubdTFnext);
 
-										cout<<"\nCopy of the subformula with free variable " << var;
+										//cout<<"\nCopy of the subformula with free variable " << var;
 										display_ft_pre_sub(new_subformula);
-										cout<<"\n";
+										//cout<<"\n";
 
-										cout<<"\n\nReplacing "<< var << " by " << R*i+j << " in the above formula\n\n";
-										getchar();
+										//cout<<"\n\nReplacing "<< var << " by " << R*i+j << " in the above formula\n\n";
+										//getchar();
 
 										substitute(new_subformula,var,i,j,R*i+j);
 
-										cout<<"\nThe substituted subformula is:";
+										//cout<<"\nThe substituted subformula is:";
 										display_ft_pre_sub(new_subformula);
-										cout<<"\n";
+										//cout<<"\n";
 
 										new_root->left=new_subformula;
 										new_root->right=NULL;
 
-										cout<<"\nThe partially quantifier eliminated formula is:";
+										//cout<<"\nThe partially quantifier eliminated formula is:";
 										display_ft_pre_sub(root);
-										cout<<"\n\n";
+										//cout<<"\n\n";
 
 										old_root->right=new_root;
 										old_root=new_root;
@@ -894,7 +894,7 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 							//	k++;
 							//}
 							//var[k-1]='\0';
-							//cout<<"\nEliminating an universal quantifier A%s\n",var);
+							////cout<<"\nEliminating an universal quantifier A%s\n",var);
 							
 							//client=TF->client;
 //compute M and R for the client type of A
@@ -903,9 +903,9 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 
 							SubdTFnext=eliminate_quantifier(TF->next);
 
-							//cout<<"\nAfter eliminating quantifiers from the sub-formula:;
+							////cout<<"\nAfter eliminating quantifiers from the sub-formula:;
 							//display_ft_pre_sub(SubdTFnext);
-							//cout<<"\n\n";							
+							////cout<<"\n\n";							
 							//getchar();
 
 							for(int i=0;i<M;i++){
@@ -918,44 +918,44 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 
 										new_subformula=copy(SubdTFnext);
 
-										//cout<<"\nCopy of the subformula with free variable %s:",var);
+										////cout<<"\nCopy of the subformula with free variable %s:",var);
 										//display_ft_pre_sub(new_subformula);
-										//cout<<"\n";
+										////cout<<"\n";
 										//getchar();
 
 										substitute(new_subformula,var,0,0,R*0+0);
 
-										//cout<<"\nThe substituted subformula is:;
+										////cout<<"\nThe substituted subformula is:;
 										//display_ft_pre_sub(new_subformula);
-										//cout<<"\n";
+										////cout<<"\n";
 
 										root->left=new_subformula;
 
-										//cout<<"\nThe partially quantifier eliminated formula is:;
+										////cout<<"\nThe partially quantifier eliminated formula is:;
 										//display_ft_pre_sub(root);
-										//cout<<"\n";
+										////cout<<"\n";
 
 										old_root=root;
 									}
 									else if(i==M-1 && j==R-1){
 										new_subformula=copy(SubdTFnext);
 
-										//cout<<"\nCopy of the subformula with free variable %s:",var);
+										////cout<<"\nCopy of the subformula with free variable %s:",var);
 										//display_ft_pre_sub(new_subformula);
-										//cout<<"\n";
+										////cout<<"\n";
 										//getchar();
 
 										substitute(new_subformula,var,i,j,R*i+j);
 
-										//cout<<"\nThe substituted subformula is:;
+										////cout<<"\nThe substituted subformula is:;
 										//display_ft_pre_sub(new_subformula);
-										//cout<<"\n";
+										////cout<<"\n";
 
 										old_root->right=new_subformula;
 
-										//cout<<"\nThe partially quantifier eliminated formula is:;
+										////cout<<"\nThe partially quantifier eliminated formula is:;
 										//display_ft_pre_sub(old_root);
-										//cout<<"\n";
+										////cout<<"\n";
 
 										
 									}
@@ -967,24 +967,24 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 
 										new_subformula=copy(SubdTFnext);
 
-										//cout<<"\nCopy of the subformula with free variable %s:",var);
+										////cout<<"\nCopy of the subformula with free variable %s:",var);
 										//display_ft_pre_sub(new_subformula);
-										//cout<<"\n";
+										////cout<<"\n";
 
 										//getchar();
 
 										substitute(new_subformula,var,i,j,R*i+j);
 
-										//cout<<"\nThe substituted subformula is:;
+										////cout<<"\nThe substituted subformula is:;
 										//display_ft_pre_sub(new_subformula);
-										//cout<<"\n";
+										////cout<<"\n";
 
 										new_root->left=new_subformula;
 										old_root->right=new_root;
 
-										//cout<<"\nThe partially quantifier eliminated formula is:;
+										////cout<<"\nThe partially quantifier eliminated formula is:;
 										//display_ft_pre_sub(root);
-										//cout<<"\n";
+										////cout<<"\n";
 
 										old_root=new_root;
 									}
@@ -993,7 +993,7 @@ FTree* Formula::eliminate_quantifier(FTree* TF)
 							return root;
 
 
-					default: 	//cout<<"\nThere is an error in the subformula.\nWe expected a quantifier.\n";
+					default: 	////cout<<"\nThere is an error in the subformula.\nWe expected a quantifier.\n";
 							return 0;
 				}			
 
@@ -1013,23 +1013,23 @@ FTree* Formula::copy(FTree* TF)
 	 FTree* new_l_subtree=NULL;
 	 FTree* new_r_subtree=NULL;
 
-	cout<<"\nIn the copy routine for:";
+	//cout<<"\nIn the copy routine for:";
 	display_ft_pre_sub(TF);
 	if(TF==NULL){
-		cout<<"\nError in the formula tree.\n";
+		//cout<<"\nError in the formula tree.\n";
 		return(NULL);
 	}
-			//cout<<"\nThe formula to copy (in prefix form);
+			////cout<<"\nThe formula to copy (in prefix form);
 			//display_ft_pre_sub(TF);	
 			fflush(stdout);
 	switch(TF->type){
-		case 2: //cout<<"\nThe node type is %d",TF->type);
+		case 2: ////cout<<"\nThe node type is %d",TF->type);
 			new_l_subtree=copy(TF->left);
 			new_r_subtree=copy(TF->right);
 
 			new_node=new FTree;
 			if(new_node==NULL){
-				//cout<<"\nError in memory allocation\nExiting\n";
+				////cout<<"\nError in memory allocation\nExiting\n";
 				exit(0);
 			}
 			new_node->type=2;
@@ -1046,12 +1046,12 @@ FTree* Formula::copy(FTree* TF)
 			return(new_node);
 		case 3:
 		case 4:
-		case 1: //cout<<"\nThe node type is %d",TF->type);
+		case 1: ////cout<<"\nThe node type is %d",TF->type);
 			fflush(stdout);
 			new_subtree=copy(TF->next);
 			new_node=new FTree;
 			if(new_node==NULL){
-				//cout<<"\nError in memory allocation\nExiting\n";
+				////cout<<"\nError in memory allocation\nExiting\n";
 				exit(0);
 			}
 			new_node->type=TF->type;
@@ -1068,11 +1068,11 @@ FTree* Formula::copy(FTree* TF)
 			new_node->next=new_subtree;
 			return(new_node);
 
-		case 0: cout<<"\nThe node type is :" << TF->type;
+		case 0: //cout<<"\nThe node type is :" << TF->type;
 			fflush(stdout);
 			new_leaf=new FTree;
 			if(new_leaf==NULL){
-				cout<<"\nError in memory allocation\nExiting\n";
+				//cout<<"\nError in memory allocation\nExiting\n";
 				exit(0);
 			}
 			new_leaf->type=0;
@@ -1087,12 +1087,12 @@ FTree* Formula::copy(FTree* TF)
 			new_leaf->left=NULL;
 			new_leaf->right=NULL;
 			new_leaf->next=NULL;
-			cout << "\n\n";
+			//cout << "\n\n";
 			return(new_leaf);		
 			
 
 		default:
-			//cout<<"\nError! Type can either be 0, 1 or 2.\n";
+			////cout<<"\nError! Type can either be 0, 1 or 2.\n";
 			break;
 
 	}
@@ -1102,18 +1102,18 @@ FTree* Formula::copy(FTree* TF)
 //--------------------------------------------------------------------------------------------------------------------------------
 void Formula::substitute(FTree* TF,string var, int i, int j,int k)
 {
-//	//cout<<"\nReplacing %s by (%d,%d) recursively in the formula:",var,i,j);
+//	////cout<<"\nReplacing %s by (%d,%d) recursively in the formula:",var,i,j);
 //	//display_ft_pre(TF);
-//	//cout<<"\n";
+//	////cout<<"\n";
 	if(TF==NULL){
-		//cout<<"\nFormula is NULL\nThis should not have happened.\n";
+		////cout<<"\nFormula is NULL\nThis should not have happened.\n";
 		fflush(stdout);
 		return;
 	}
 	switch(TF->type)
 	{
 		case 0:		if(TF->val==var && TF->subd ==0){
-					//cout<<"We are replacing %s by (%d,%d) at the leaf level\n",TF->val,i,j);
+					////cout<<"We are replacing %s by (%d,%d) at the leaf level\n",TF->val,i,j);
 					TF->model=i;
 					TF->copy=j;
 					TF->num=k;
@@ -1280,7 +1280,7 @@ vector<int> Formula::get_counters()
 		it2 = VarNum.find(client_temp);
 		if(it2 == VarNum.end())
 		{
-			cout<<"Error Occured\n";
+			//cout<<"Error Occured\n";
 			exit(0);
 		}
 		int NoOfPred = it1->second;

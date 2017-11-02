@@ -5,7 +5,7 @@ VAR loc : {s0,s1};
 IVAR ip :  boolean;
 
 init(loc):=s0;
-
+ 
 ASSIGN
 
  next(loc):=case
