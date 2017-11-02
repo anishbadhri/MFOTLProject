@@ -1,0 +1,90 @@
+MODULE main
+
+VAR loc : {s0,s1};
+
+IVAR ip :  boolean;
+
+VAR ctr1: 0..4;
+
+VAR p1: array 1..4 of boolean;
+
+VAR q1: array 1..4 of boolean;
+
+ASSIGN
+
+	init(ctr1) := 0;
+
+	init(p1[1]) := FALSE;
+	init(p1[2]) := FALSE;
+	init(p1[3]) := FALSE;
+	init(p1[4]) := FALSE;
+
+	init(q1[1]) := FALSE;
+	init(q1[2]) := FALSE;
+	init(q1[3]) := FALSE;
+	init(q1[4]) := FALSE;
+
+ next(loc):=case
+	loc = s0 & ip=TRUE : s1;
+	loc = s1 & ip=FALSE : s0;
+
+	TRUE : loc;
+ esac;
+
+ next(ctr1) := case
+  ip = TRUE & ctr1 < 4 : ctr1 + 1;
+  ip = FALSE & ctr1 > 0 : ctr1 - 1;
+  TRUE : ctr1;
+ esac;
+
+ next(p1[1]) := case
+  p1[1] = FALSE & ip = TRUE & ctr1 = 0 : TRUE;
+  p1[1] = TRUE & next(q1[1]) = TRUE : FALSE;
+  TRUE : p1[1];
+ esac;
+
+ next(p1[2]) := case
+  p1[2] = FALSE & ip = TRUE & ctr1 = 1 : TRUE;
+  p1[2] = TRUE & next(q1[2]) = TRUE : FALSE;
+  TRUE : p1[2];
+ esac;
+
+ next(p1[3]) := case
+  p1[3] = FALSE & ip = TRUE & ctr1 = 2 : TRUE;
+  p1[3] = TRUE & next(q1[3]) = TRUE : FALSE;
+  TRUE : p1[3];
+ esac;
+
+ next(p1[4]) := case
+  p1[4] = FALSE & ip = TRUE & ctr1 = 3 : TRUE;
+  p1[4] = TRUE & next(q1[4]) = TRUE : FALSE;
+  TRUE : p1[4];
+ esac;
+
+ next(q1[1]) := case
+    q1[1] = FALSE & ip = FALSE & ctr1 = 1 : TRUE;
+    q1[1] = TRUE : FALSE;
+  TRUE : q1[1];
+ esac;
+
+ next(q1[2]) := case
+    q1[2] = FALSE & ip = FALSE & ctr1 = 2 : TRUE;
+    q1[2] = TRUE : FALSE;
+  TRUE : q1[2];
+ esac;
+
+ next(q1[3]) := case
+    q1[3] = FALSE & ip = FALSE & ctr1 = 3 : TRUE;
+    q1[3] = TRUE : FALSE;
+  TRUE : q1[3];
+ esac;
+
+ next(q1[4]) := case
+    q1[4] = FALSE & ip = FALSE & ctr1 = 4 : TRUE;
+    q1[4] = TRUE : FALSE;
+  TRUE : q1[4];
+ esac;
+
+
+LTLSPEC
+(F(((p1[0])|(p1[1]))|((p1[0])|(p1[1]))))

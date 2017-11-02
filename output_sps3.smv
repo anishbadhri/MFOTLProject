@@ -1,0 +1,121 @@
+MODULE main
+
+VAR loc : {s0,s1,s2,s3};
+
+IVAR ip1 : boolean;
+
+IVAR ip2 : boolean;
+
+VAR ctr1: 0..2;
+
+VAR ctr2: 0..2;
+
+VAR p1: array 1..2 of boolean;
+
+VAR q1: array 1..2 of boolean;
+
+VAR p2: array 1..2 of boolean;
+
+VAR q2: array 1..2 of boolean;
+
+ASSIGN
+ init(loc):=s0;
+
+	init(ctr1) := 0;
+
+	init(ctr2) := 0;
+
+	init(p1[1]) := FALSE;
+	init(p1[2]) := FALSE;
+
+	init(q1[1]) := FALSE;
+	init(q1[2]) := FALSE;
+
+	init(p2[1]) := FALSE;
+	init(p2[2]) := FALSE;
+
+	init(q2[1]) := FALSE;
+	init(q2[2]) := FALSE;
+
+ next(loc):=case
+	loc = s0 & ip1=TRUE : s1;
+	loc = s1 & ip1=FALSE : s0;
+
+	loc = s0 & ip2=TRUE : s2;
+	loc = s2 & ip2=FALSE : s0;
+
+	loc = s1 & ip2=TRUE : s3;
+	loc = s3 & ip2=FALSE : {s1,s3};
+
+	loc = s2 & ip1=TRUE : s3;
+	loc = s3 & ip1=FALSE : {s2,s3};
+
+	loc = s3 & ip1=TRUE : s3;
+	loc = s2 & ip2=TRUE : s3;
+
+	TRUE : loc;
+ esac;
+
+ next(ctr1) := case
+  ip1 = TRUE & ctr1 < 2 : ctr1 + 1;
+  ip1 = FALSE & ctr1 > 0 : ctr1 - 1;
+  TRUE : ctr1;
+ esac;
+
+ next(ctr2) := case
+  ip2 = TRUE & ctr2 < 2 : ctr2 + 1;
+  ip2 = FALSE & ctr2 > 0 : ctr2 - 1;
+  TRUE : ctr2;
+ esac;
+
+ next(p1[1]) := case
+  p1[1] = FALSE & ip1 = TRUE & ctr1 = 0 : TRUE;
+  p1[1] = TRUE & next(q1[1]) = TRUE : FALSE;
+  TRUE : p1[1];
+ esac;
+
+ next(p1[2]) := case
+  p1[2] = FALSE & ip1 = TRUE & ctr1 = 1 : TRUE;
+  p1[2] = TRUE & next(q1[2]) = TRUE : FALSE;
+  TRUE : p1[2];
+ esac;
+
+ next(q1[1]) := case
+    q1[1] = FALSE & ip1 = FALSE & ctr1 = 1 : TRUE;
+    q1[1] = TRUE : FALSE;
+  TRUE : q1[1];
+ esac;
+
+ next(q1[2]) := case
+    q1[2] = FALSE & ip1 = FALSE & ctr1 = 2 : TRUE;
+    q1[2] = TRUE : FALSE;
+  TRUE : q1[2];
+ esac;
+
+ next(p2[1]) := case
+  p2[1] = FALSE & ip2 = TRUE & ctr2 = 0 : TRUE;
+  p2[1] = TRUE & next(q2[1]) = TRUE : FALSE;
+  TRUE : p2[1];
+ esac;
+
+ next(p2[2]) := case
+  p2[2] = FALSE & ip2 = TRUE & ctr2 = 1 : TRUE;
+  p2[2] = TRUE & next(q2[2]) = TRUE : FALSE;
+  TRUE : p2[2];
+ esac;
+
+ next(q2[1]) := case
+    q2[1] = FALSE & ip2 = FALSE & ctr2 = 1 : TRUE;
+    q2[1] = TRUE : FALSE;
+  TRUE : q2[1];
+ esac;
+
+ next(q2[2]) := case
+    q2[2] = FALSE & ip2 = FALSE & ctr2 = 2 : TRUE;
+    q2[2] = TRUE : FALSE;
+  TRUE : q2[2];
+ esac;
+
+
+LTLSPEC
+((p11x:1)&((p22[0])|(p22[1])))

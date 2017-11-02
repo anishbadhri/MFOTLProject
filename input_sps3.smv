@@ -1,0 +1,32 @@
+MODULE main
+
+VAR loc : {s0,s1,s2,s3};
+
+IVAR ip1 : boolean;
+
+IVAR ip2 : boolean;
+
+ASSIGN
+ init(loc):=s0;
+
+ next(loc):=case
+	loc = s0 & ip1=TRUE : s1;
+	loc = s1 & ip1=FALSE : s0;
+
+	loc = s0 & ip2=TRUE : s2;
+	loc = s2 & ip2=FALSE : s0;
+
+	loc = s1 & ip2=TRUE : s3;
+	loc = s3 & ip2=FALSE : {s1,s3};
+
+	loc = s2 & ip1=TRUE : s3;
+	loc = s3 & ip1=FALSE : {s2,s3};
+
+	loc = s3 & ip1=TRUE : s3;
+	loc = s2 & ip2=TRUE : s3;
+
+	TRUE : loc;
+ esac;
+
+MFOTLSPEC 
+(G((Ex:1)p1(x:1)&(Ey:2)p2(y:2)))

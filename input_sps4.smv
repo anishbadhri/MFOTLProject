@@ -1,0 +1,19 @@
+MODULE main
+
+VAR loc : {s0,s1};
+
+IVAR ip :  boolean;
+
+init(loc):=s0;
+
+ASSIGN
+
+ next(loc):=case
+	loc = s0 & ip=TRUE : s1;
+	loc = s1 & ip=FALSE : s0;
+
+	TRUE : loc;
+ esac;
+
+MFOTLSPEC
+(G(Ex:1(q(x:1)|(p(x:1)&~q(x:1)))))
