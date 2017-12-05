@@ -29,4 +29,4 @@ ASSIGN
  esac;
 
 MFOTLSPEC 
-(G((Ex:1)p1(x:1)&(Ey:2)p2(y:2)))
+(G((Ex:1(p1(x:1)))&(Ey:2(p2(y:2)))))

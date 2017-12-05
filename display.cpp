@@ -260,50 +260,51 @@ void Formula::display_ft_pre_sub(FTree* FT)
 void Formula::display_ft_sub2(FTree* FT,string& s)
 {
 	
-		if(FT==NULL){
+	if(FT==NULL){
 //		//cout <<"\nError in the formula tree.\n")
 		return;
 	}
+	if(!(FT->next == NULL && FT->left == NULL && FT->right==NULL))
+	{cout<<"(";
+	s += "(";}
 	switch(FT->type){
 
 		case 4: //cout <<"\nThe node type is %d",FT->type);---monadic predicates
-			s += to_string(FT->val);
-			s += to_string(FT->client);
+			s += FT->val;
+			s += FT->client;
 			cout << FT->val<<FT->client;
 			display_ft_sub2(FT->next,s);
 			break;
 
 		case 3: //cout <<"\nThe node type is %d",FT->type);--quantifiers
+			s += FT->val;
 			cout << FT->val;
-			s += to_string(FT->val);
 			display_ft_sub2(FT->next,s);
 			break;
 
 		case 2: //cout <<"\nThe node type is %d",FT->type);--binary operators
 			display_ft_sub2(FT->left,s);
-
+			s += FT->val;
 			cout << FT->val;
-			s+= to_string(FT->val);
-			display_ft_sub(FT->right);
+			display_ft_sub2(FT->right,s);
 			break;
 
 		case 1: //cout <<"\nThe node type is %d",FT->type);--unary operators
+			s += FT->val;
 			cout << FT->val;
-			s += to_string(FT->val);
 			display_ft_sub2(FT->next,s);
 			break;
 
 		case 0: //cout <<"\nThe node type is %d",FT->type);--variable or local proposition
 			if(FT->subd)
-			{	
-				cout << "[" << FT->num << "]";	
+			{	cout << "[" << FT->num << "]";	
 				s += "[";
 				s += to_string(FT->num);
 				s += "]";
 			}
 			else{
 				cout << FT->val;
-				s += to_string(Ft->val);
+				s += FT->val;
 				//if(!FT->client.empty()){
 				//	cout << ":"<< FT->client;
 				//}
@@ -315,5 +316,8 @@ void Formula::display_ft_sub2(FTree* FT,string& s)
 			//cout <<"\nError! Type can either be 0, 1 or 2.\n");
 			break;
 	}
+	if(!(FT->next == NULL && FT->left == NULL && FT->right==NULL))
+	{cout<<")";
+	s+=')';}
 
 }

@@ -18,4 +18,4 @@ ASSIGN
  esac;
 
 MFOTLSPEC
-(G(Ex:1(~q(x:1)|(p(x:1)&q(x:1)))))
+(G(Ex:1((~q(x:1))|(p(x:1)&q(x:1)))))

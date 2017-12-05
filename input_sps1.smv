@@ -16,4 +16,4 @@ ASSIGN
  esac;
 
 MFOTLSPEC
-(F(Ex(p(x))))
+(Ex(Ey((p(x))&(p(y)))))
